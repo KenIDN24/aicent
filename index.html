@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Aicent Mint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f7f5;
+        --surface: #ffffff;
+        --surface-2: #f0f0ec;
+        --ink: #16150f;
+        --ink-2: #55534a;
+        --ink-3: #8a877c;
+        --line: #e3e1d8;
+        --accent: #c9930a;
+        --accent-strong: #a87c00;
+        --accent-soft: #faf0d2;
+        --gold: #f0b90b;
+        --ok: #1d7a3a;
+        --ok-bg: #e4f3e8;
+        --err: #b3261e;
+        --err-bg: #fbe9e7;
+        --warn: #8a5b00;
+        --warn-bg: #fdf3d7;
+        --shadow: 0 1px 2px rgba(22, 21, 15, 0.05), 0 8px 28px rgba(22, 21, 15, 0.06);
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #12110d;
+          --surface: #1c1b16;
+          --surface-2: #26241d;
+          --ink: #f2f0e6;
+          --ink-2: #b6b3a6;
+          --ink-3: #837f70;
+          --line: #33312a;
+          --accent: #f0b90b;
+          --accent-strong: #ffd23f;
+          --accent-soft: #33290c;
+          --ok: #5fce7f;
+          --ok-bg: #15301d;
+          --err: #ff8a80;
+          --err-bg: #3a1712;
+          --warn: #ffcf5c;
+          --warn-bg: #33270a;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+          color-scheme: dark;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+      a { color: var(--accent-strong); }
+
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 20px 64px; }
+
+      /* toolbar */
+      .bar {
+        display: flex; align-items: center; gap: 10px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .bar .net {
+        display: inline-flex; align-items: center; gap: 7px;
+        font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em;
+        color: var(--ink-2);
+      }
+      .bar .net .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; }
+      .bar .spacer { flex: 1; }
+      .lang-toggle {
+        display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
+        background: var(--surface); overflow: hidden;
+      }
+      .lang-toggle button {
+        border: 0; background: transparent; color: var(--ink-2);
+        font: inherit; font-size: 13px; font-weight: 700;
+        padding: 7px 13px; cursor: pointer;
+      }
+      .lang-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+      /* hero */
+      .hero { padding: 40px 0 8px; }
+      .hero h1 {
+        font-size: clamp(44px, 8vw, 76px); line-height: 0.98; letter-spacing: -0.03em;
+        margin: 0 0 14px; font-weight: 800;
+      }
+      .hero h1 .sym { color: var(--accent); }
+      .hero p.lede { font-size: clamp(16px, 2.4vw, 19px); color: var(--ink-2); max-width: 640px; margin: 0; }
+      .hero p.lede strong { color: var(--ink); }
+
+      /* stats */
+      .stats {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+        margin: 30px 0 0;
+      }
+      .stat {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 16px 18px; box-shadow: var(--shadow);
+      }
+      .stat .k { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+      .stat .v { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+      .stat .v small { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+      .stat .sub { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
+      .progress { height: 8px; background: var(--surface-2); border-radius: 99px; overflow: hidden; margin-top: 12px; }
+      .progress > div { height: 100%; background: var(--gold); width: 0%; transition: width 0.6s ease; }
+      @media (prefers-reduced-motion: reduce) { .progress > div { transition: none; } }
+
+      /* layout */
+      .grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 20px; margin-top: 26px; align-items: start; }
+      @media (max-width: 860px) {
+        .stats { grid-template-columns: repeat(2, 1fr); }
+        .grid { grid-template-columns: 1fr; }
+      }
+      .panel {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+        padding: 24px; box-shadow: var(--shadow);
+      }
+      .panel h2 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; }
+      .panel h3 { font-size: 16px; margin: 0 0 10px; }
+      .panel .hint { color: var(--ink-2); font-size: 13.5px; margin: 0 0 18px; }
+
+      label.f { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.03em; margin: 18px 0 7px; }
+      label.f:first-of-type { margin-top: 6px; }
+      .help { font-size: 13px; color: var(--ink-2); margin-top: 7px; }
+      input[type="text"], input[type="number"] {
+        width: 100%; font: inherit; font-size: 16px;
+        background: var(--surface-2); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+        outline: none;
+      }
+      input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      input.id-input { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; word-break: break-all; }
+
+      .stepper { display: flex; align-items: stretch; gap: 8px; }
+      .stepper button {
+        width: 48px; border-radius: 12px; border: 1px solid var(--line);
+        background: var(--surface-2); color: var(--ink); font-size: 22px; font-weight: 700;
+        cursor: pointer; line-height: 1;
+      }
+      .stepper button:disabled { opacity: 0.4; cursor: not-allowed; }
+      .stepper input { text-align: center; font-weight: 800; font-size: 18px; }
+      .quick { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+      .quick button {
+        font: inherit; font-size: 12.5px; font-weight: 700; padding: 5px 11px;
+        border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+        color: var(--ink-2); cursor: pointer;
+      }
+      .quick button:hover { color: var(--ink); border-color: var(--ink-3); }
+
+      .owned-line { font-size: 13.5px; color: var(--ink-2); margin-top: 10px; font-variant-numeric: tabular-nums; }
+      .owned-line b { color: var(--ink); }
+
+      .quote {
+        margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 16px;
+        display: grid; gap: 8px; font-variant-numeric: tabular-nums;
+      }
+      .quote .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14.5px; }
+      .quote .row .k { color: var(--ink-2); }
+      .quote .row.total { font-size: 17px; font-weight: 800; }
+      .quote .row.total .v { font-size: 20px; }
+      .splitbar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; margin-top: 4px; }
+      .splitbar .pool { background: var(--gold); width: 80%; }
+      .splitbar .treasury { background: var(--ink); width: 20%; opacity: 0.75; }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        font: inherit; font-weight: 800; font-size: 15.5px;
+        border-radius: 12px; padding: 13px 20px; cursor: pointer; border: 1px solid transparent;
+        width: 100%;
+      }
+      .btn.primary { background: var(--gold); color: #1c1703; }
+      .btn.primary:hover:not(:disabled) { background: #ffca28; }
+      .btn.dark { background: var(--ink); color: var(--bg); }
+      .btn.ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+      .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+      .btn.small { width: auto; padding: 9px 16px; font-size: 14px; }
+      .actions { display: grid; gap: 10px; margin-top: 20px; }
+      .wallet-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; font-size: 13.5px; color: var(--ink-2); }
+      .wallet-line .addr { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); padding: 4px 9px; border-radius: 8px; }
+      .bal-line { font-size: 13.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+      .bal-line b { color: var(--ink); }
+
+      .msg { border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-top: 16px; display: none; word-break: break-word; }
+      .msg.show { display: block; }
+      .msg.ok { background: var(--ok-bg); color: var(--ok); }
+      .msg.err { background: var(--err-bg); color: var(--err); }
+      .msg.warn { background: var(--warn-bg); color: var(--warn); }
+      .msg a { font-weight: 700; }
+
+      /* table */
+      table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+      th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); }
+      tr:last-child td { border-bottom: 0; }
+      td.num, th.num { text-align: right; }
+      tr.current td { background: var(--accent-soft); font-weight: 700; }
+      tr.current td:first-child { border-radius: 8px 0 0 8px; }
+      tr.current td:last-child { border-radius: 0 8px 8px 0; }
+
+      ul.how { margin: 0; padding-left: 20px; display: grid; gap: 9px; color: var(--ink-2); font-size: 14.5px; }
+      ul.how b { color: var(--ink); }
+
+      .contracts { display: grid; gap: 0; }
+      .contract-row {
+        display: flex; align-items: center; gap: 10px; padding: 11px 0;
+        border-bottom: 1px solid var(--line); flex-wrap: wrap;
+      }
+      .contract-row:last-child { border-bottom: 0; }
+      .contract-row .name { font-weight: 700; font-size: 14px; min-width: 150px; }
+      .contract-row .addr { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-2); word-break: break-all; flex: 1; min-width: 200px; }
+      .icon-btn {
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+        border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+      }
+      .icon-btn:hover { color: var(--ink); }
+
+      footer { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 18px; color: var(--ink-3); font-size: 13px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: space-between; }
+      .spin {
+        width: 16px; height: 16px; border-radius: 50%; flex: none;
+        border: 2px solid rgba(0,0,0,0.25); border-top-color: currentColor;
+        animation: rot 0.8s linear infinite; display: none;
+      }
+      .busy .spin { display: inline-block; }
+      @keyframes rot { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="bar">
+        <span class="net"><span class="dot"></span><span data-i18n="network">BNB Smart Chain · Mainnet</span></span>
+        <span class="spacer"></span>
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="lang-en" aria-pressed="true">EN</button>
+          <button type="button" id="lang-zh" aria-pressed="false">中文</button>
+        </div>
+      </div>
+
+      <header class="hero">
+        <h1>Aicent <span class="sym">AICENT</span></h1>
+        <p class="lede" data-i18n="lede">
+          Mint Aicent shares with USDT, gated by your SPACE ID Agent ID.
+          <strong>1 share = 1 AICENT</strong>, priced on a rising curve that starts at
+          <strong>0.50 USDT</strong>.
+        </p>
+      </header>
+
+      <section class="stats" aria-label="Live stats">
+        <div class="stat">
+          <div class="k" data-i18n="statPrice">Current price / share</div>
+          <div class="v"><span id="stat-price">—</span> <small>USDT</small></div>
+          <div class="sub" data-i18n="statPriceSub">Next share, live from the contract</div>
+        </div>
+        <div class="stat">
+          <div class="k" data-i18n="statSold">Shares sold</div>
+          <div class="v" id="stat-sold">—</div>
+          <div class="sub"><span data-i18n="statSoldOf">of</span> 4,440,000</div>
+        </div>
+        <div class="stat">
+          <div class="k" data-i18n="statReserve">Pool reserve</div>
+          <div class="v"><span id="stat-reserve">—</span> <small>USDT</small></div>
+          <div class="sub" data-i18n="statReserveSub">80% of every payment, held in the mint contract</div>
+        </div>
+        <div class="stat">
+          <div class="k" data-i18n="statProgress">Sale progress</div>
+          <div class="v" id="stat-pct">—</div>
+          <div class="progress"><div id="progress-fill"></div></div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="panel" aria-label="Mint">
+          <h2 data-i18n="mintTitle">Mint shares</h2>
+          <p class="hint" data-i18n="mintHint">You receive AICENT in the same transaction. Payment is in USDT on BNB Smart Chain.</p>
+
+          <div id="connect-block">
+            <button class="btn primary" id="btn-connect" type="button">
+              <span class="spin"></span><span data-i18n="connect">Connect Wallet</span>
+            </button>
+            <p class="help" data-i18n="connectHelp">Works with MetaMask and Binance Wallet. The network switches to BNB Smart Chain automatically.</p>
+          </div>
+
+          <div id="wallet-block" hidden>
+            <div class="wallet-line">
+              <span data-i18n="connectedAs">Connected</span>
+              <span class="addr" id="wallet-addr">—</span>
+              <button class="icon-btn" id="btn-disconnect" type="button" data-i18n="disconnect">Disconnect</button>
+            </div>
+            <div class="wallet-line">
+              <span class="bal-line"><span data-i18n="balAicent">Your AICENT</span>: <b id="bal-aicent">—</b></span>
+              <span class="bal-line"><span data-i18n="balUsdt">Your USDT</span>: <b id="bal-usdt">—</b></span>
+            </div>
+
+            <label class="f" for="agent-id" data-i18n="agentIdLabel">Agent Token ID</label>
+            <input class="id-input" type="text" id="agent-id" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="e.g. 12345678901234567890…" />
+            <p class="help" data-i18n="agentIdHelp">The token ID of your SPACE ID Agent ID NFT. You can only mint with an Agent ID owned by your connected wallet — find the ID in your wallet's NFT list or on your Agent ID profile page.</p>
+            <div class="owned-line" id="owned-line" hidden>
+              <span data-i18n="ownedPrefix">Already minted with this Agent ID:</span>
+              <b><span id="owned-count">0</span> / 10</b>
+              · <span data-i18n="ownedRemain">Remaining:</span> <b id="owned-remain">10</b>
+            </div>
+
+            <label class="f" for="shares" data-i18n="sharesLabel">Shares</label>
+            <div class="stepper">
+              <button type="button" id="step-down" aria-label="−">−</button>
+              <input type="number" id="shares" min="1" max="10" step="1" value="1" />
+              <button type="button" id="step-up" aria-label="+">+</button>
+            </div>
+            <div class="quick">
+              <button type="button" data-set="1">1</button>
+              <button type="button" data-set="5">5</button>
+              <button type="button" data-set="10" data-i18n="quickMax">10 (max)</button>
+            </div>
+            <p class="help" data-i18n="sharesHelp">Maximum 10 shares per Agent ID. Each share mints 1 AICENT to your wallet.</p>
+
+            <div class="quote">
+              <div class="row"><span class="k" data-i18n="qAvg">Average price / share</span><span class="v mono" id="q-avg">—</span></div>
+              <div class="row"><span class="k" data-i18n="qPool">To pool reserve (80%)</span><span class="v mono" id="q-pool">—</span></div>
+              <div class="row"><span class="k" data-i18n="qTreasury">To treasury (20%)</span><span class="v mono" id="q-treasury">—</span></div>
+              <div class="splitbar" aria-hidden="true"><div class="pool"></div><div class="treasury"></div></div>
+              <div class="row total"><span class="k" data-i18n="qTotal">Total cost</span><span class="v mono" id="q-total">—</span></div>
+            </div>
+
+            <div class="actions">
+              <button class="btn dark" id="btn-approve" type="button" disabled>
+                <span class="spin"></span><span data-i18n="approve">Approve USDT</span>
+              </button>
+              <button class="btn primary" id="btn-mint" type="button" disabled>
+                <span class="spin"></span><span data-i18n="mintBtn">Mint</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="msg" id="msg" role="status"></div>
+        </section>
+
+        <div>
+          <section class="panel" aria-label="Price curve">
+            <h3 data-i18n="curveTitle">Price curve</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="curveColSold">Shares sold</th>
+                  <th class="num" data-i18n="curveColPrice">Price / share (USDT)</th>
+                </tr>
+              </thead>
+              <tbody id="curve-body"></tbody>
+            </table>
+            <p class="help" data-i18n="curveNote">The price rises as shares sell. A purchase that crosses a tier boundary pays each share at its own tier price.</p>
+          </section>
+
+          <section class="panel" style="margin-top:20px" aria-label="How it works">
+            <h3 data-i18n="howTitle">How it works</h3>
+            <ul class="how">
+              <li data-i18n="how1"><b>Agent ID gate.</b> Minting requires a SPACE ID Agent ID NFT — the contract checks that your wallet owns the Agent ID you enter.</li>
+              <li data-i18n="how2"><b>Instant delivery.</b> Pay in USDT and receive 1 AICENT per share in the same transaction.</li>
+              <li data-i18n="how3"><b>80 / 20 split.</b> 80% of every payment stays in the mint contract as pool reserve; 20% goes to the treasury wallet.</li>
+              <li data-i18n="how4"><b>Fixed supply.</b> 4,440,000 shares maximum, 10 per Agent ID. When they are gone, minting ends.</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <section class="panel" style="margin-top:20px" aria-label="Contracts">
+        <h3 data-i18n="contractsTitle">Contracts — BNB Smart Chain (chain 56)</h3>
+        <div class="contracts" id="contracts"></div>
+      </section>
+
+      <footer>
+        <span data-i18n="footNote">Aicent (AICENT) share mint. All figures are read live from the contracts on BNB Smart Chain.</span>
+        <span><a href="https://bscscan.com/address/0xd467435dac6fb658E32aA7dC1B25dE83711e45bB" target="_blank" rel="noopener" data-i18n="footScan">View the mint contract on BscScan</a></span>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+    <script>
+      "use strict";
+
+      /* ---------- constants ---------- */
+      var CHAIN_ID = 56;
+      var CHAIN_HEX = "0x38";
+      var ADDR = {
+        token: "0xc81Ac0466Ddb97f6ae701CB7a607146e084c212A",
+        mint: "0xd467435dac6fb658E32aA7dC1B25dE83711e45bB",
+        usdt: "0x55d398326f99059fF775485246999027B3197955",
+        registry: "0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F",
+        treasury: "0xf2d44e7c3Fc6330bF02B64d4442989Aa2B2f0Ff4"
+      };
+      var MAX_SHARES = 4440000n;
+      var RPCS = [
+        "https://bsc-dataseed.binance.org",
+        "https://bsc-dataseed1.defibit.io",
+        "https://bsc-dataseed1.ninicoin.io"
+      ];
+      var MINT_ABI = [
+        "function priceFor(uint256 sold) view returns (uint256)",
+        "function quote(uint256 shares) view returns (uint256)",
+        "function totalSold() view returns (uint256)",
+        "function poolReserve() view returns (uint256)",
+        "function sharesByAgentId(uint256) view returns (uint256)",
+        "function mint(uint256 agentTokenId, uint256 shares)"
+      ];
+      var ERC20_ABI = [
+        "function balanceOf(address) view returns (uint256)",
+        "function allowance(address owner, address spender) view returns (uint256)",
+        "function approve(address spender, uint256 value) returns (bool)"
+      ];
+
+      /* ---------- i18n ---------- */
+      var STR = {
+        en: {
+          network: "BNB Smart Chain · Mainnet",
+          lede: 'Mint Aicent shares with USDT, gated by your SPACE ID Agent ID. <strong>1 share = 1 AICENT</strong>, priced on a rising curve that starts at <strong>0.50 USDT</strong>.',
+          statPrice: "Current price / share",
+          statPriceSub: "Next share, live from the contract",
+          statSold: "Shares sold",
+          statSoldOf: "of",
+          statReserve: "Pool reserve",
+          statReserveSub: "80% of every payment, held in the mint contract",
+          statProgress: "Sale progress",
+          mintTitle: "Mint shares",
+          mintHint: "You receive AICENT in the same transaction. Payment is in USDT on BNB Smart Chain.",
+          connect: "Connect Wallet",
+          connectHelp: "Works with MetaMask and Binance Wallet. The network switches to BNB Smart Chain automatically.",
+          connectedAs: "Connected",
+          disconnect: "Disconnect",
+          balAicent: "Your AICENT",
+          balUsdt: "Your USDT",
+          agentIdLabel: "Agent Token ID",
+          agentIdHelp: "The token ID of your SPACE ID Agent ID NFT. You can only mint with an Agent ID owned by your connected wallet — find the ID in your wallet's NFT list or on your Agent ID profile page.",
+          ownedPrefix: "Already minted with this Agent ID:",
+          ownedRemain: "Remaining:",
+          sharesLabel: "Shares",
+          quickMax: "10 (max)",
+          sharesHelp: "Maximum 10 shares per Agent ID. Each share mints 1 AICENT to your wallet.",
+          qAvg: "Average price / share",
+          qPool: "To pool reserve (80%)",
+          qTreasury: "To treasury (20%)",
+          qTotal: "Total cost",
+          approve: "Approve USDT",
+          approving: "Approving…",
+          mintBtn: "Mint",
+          minting: "Minting…",
+          curveTitle: "Price curve",
+          curveColSold: "Shares sold",
+          curveColPrice: "Price / share (USDT)",
+          curveNote: "The price rises as shares sell. A purchase that crosses a tier boundary pays each share at its own tier price.",
+          howTitle: "How it works",
+          how1: "<b>Agent ID gate.</b> Minting requires a SPACE ID Agent ID NFT — the contract checks that your wallet owns the Agent ID you enter.",
+          how2: "<b>Instant delivery.</b> Pay in USDT and receive 1 AICENT per share in the same transaction.",
+          how3: "<b>80 / 20 split.</b> 80% of every payment stays in the mint contract as pool reserve; 20% goes to the treasury wallet.",
+          how4: "<b>Fixed supply.</b> 4,440,000 shares maximum, 10 per Agent ID. When they are gone, minting ends.",
+          contractsTitle: "Contracts — BNB Smart Chain (chain 56)",
+          footNote: "Aicent (AICENT) share mint. All figures are read live from the contracts on BNB Smart Chain.",
+          footScan: "View the mint contract on BscScan",
+          copy: "Copy",
+          copied: "Copied",
+          view: "BscScan",
+          cToken: "Aicent (AICENT)",
+          cMint: "AicentMint",
+          cUsdt: "USDT (payment)",
+          cRegistry: "Agent ID Registry (SPACE ID)",
+          cTreasury: "Treasury (receives 20%)",
+          errNoWallet: "No wallet found. Install MetaMask, or open this page inside the Binance Wallet browser.",
+          errRejected: "The request was rejected in your wallet.",
+          errWrongNet: "Your wallet is on the wrong network. Switch to BNB Smart Chain (chain 56) and try again.",
+          errNotOwner: "Your connected wallet does not own this Agent ID. Minting is only possible with an Agent ID held by this wallet.",
+          errCap: "This Agent ID has reached the limit of 10 shares.",
+          errSoldOut: "Sold out — all 4,440,000 shares have been minted.",
+          errZero: "Enter at least 1 share.",
+          errAllowance: "USDT allowance is too low. Approve USDT first, then mint.",
+          errBalance: "Insufficient USDT balance for this purchase.",
+          errPayFail: "The USDT payment failed. Check your balance and allowance, then try again.",
+          errInvalidId: "Enter a valid Agent Token ID (digits only).",
+          errGeneric: "Transaction failed",
+          okApprove: "USDT approved. You can mint now.",
+          okMint: "Mint successful — {n} AICENT sent to your wallet.",
+          viewTx: "View transaction on BscScan",
+          waiting: "Waiting for confirmation…",
+          agentPlaceholder: "e.g. 12345678901234567890…"
+        },
+        zh: {
+          network: "BNB 智能链 · 主网",
+          lede: '使用 USDT 铸造 Aicent 份额，由您的 SPACE ID Agent ID 控制准入。<strong>1 份额 = 1 AICENT</strong>，价格沿曲线上升，起价 <strong>0.50 USDT</strong>。',
+          statPrice: "当前价格 / 份额",
+          statPriceSub: "下一份额价格，来自合约的实时数据",
+          statSold: "已售份额",
+          statSoldOf: "/",
+          statReserve: "池储备金",
+          statReserveSub: "每笔付款的 80%，保存在铸造合约中",
+          statProgress: "销售进度",
+          mintTitle: "铸造份额",
+          mintHint: "您将在同一笔交易中收到 AICENT。在 BNB 智能链上使用 USDT 付款。",
+          connect: "连接钱包",
+          connectHelp: "支持 MetaMask 和 Binance Wallet。网络将自动切换到 BNB 智能链。",
+          connectedAs: "已连接",
+          disconnect: "断开连接",
+          balAicent: "您的 AICENT",
+          balUsdt: "您的 USDT",
+          agentIdLabel: "Agent Token ID",
+          agentIdHelp: "您的 SPACE ID Agent ID NFT 的代币 ID。只有当连接的钱包拥有该 Agent ID 时才能铸造——您可以在钱包的 NFT 列表或 Agent ID 个人页面中找到该 ID。",
+          ownedPrefix: "该 Agent ID 已铸造：",
+          ownedRemain: "剩余：",
+          sharesLabel: "份额数量",
+          quickMax: "10（上限）",
+          sharesHelp: "每个 Agent ID 最多 10 份额。每铸造 1 份额，您将获得 1 AICENT。",
+          qAvg: "平均价格 / 份额",
+          qPool: "进入池储备金（80%）",
+          qTreasury: "进入金库（20%）",
+          qTotal: "总费用",
+          approve: "授权 USDT",
+          approving: "授权中…",
+          mintBtn: "铸造",
+          minting: "铸造中…",
+          curveTitle: "价格曲线",
+          curveColSold: "已售份额",
+          curveColPrice: "每份额价格（USDT）",
+          curveNote: "价格随售出份额增加而上升。跨越价格区间的购买，每份额按其所在区间的价格计费。",
+          howTitle: "运作方式",
+          how1: "<b>Agent ID 准入。</b>铸造需要 SPACE ID Agent ID NFT——合约会检查您的钱包是否拥有您输入的 Agent ID。",
+          how2: "<b>即时到账。</b>使用 USDT 付款，在同一笔交易中按每份额获得 1 AICENT。",
+          how3: "<b>80 / 20 分配。</b>每笔付款的 80% 留在铸造合约中作为池储备金；20% 进入金库钱包。",
+          how4: "<b>固定供应。</b>总上限 4,440,000 份额，每个 Agent ID 最多 10 份额。售完后铸造结束。",
+          contractsTitle: "合约 — BNB 智能链（链 56）",
+          footNote: "Aicent（AICENT）份额铸造。所有数据均从 BNB 智能链上的合约实时读取。",
+          footScan: "在 BscScan 上查看铸造合约",
+          copy: "复制",
+          copied: "已复制",
+          view: "BscScan",
+          cToken: "Aicent（AICENT）",
+          cMint: "AicentMint",
+          cUsdt: "USDT（付款）",
+          cRegistry: "Agent ID 注册表（SPACE ID）",
+          cTreasury: "金库（接收 20%）",
+          errNoWallet: "未找到钱包。请安装 MetaMask，或在 Binance Wallet 浏览器中打开此页面。",
+          errRejected: "您在钱包中拒绝了该请求。",
+          errWrongNet: "您的钱包处于错误的网络。请切换到 BNB 智能链（链 56）后重试。",
+          errNotOwner: "连接的钱包并不拥有此 Agent ID。只有持有该 Agent ID 的钱包才能铸造。",
+          errCap: "此 Agent ID 已达到 10 份额的上限。",
+          errSoldOut: "已售罄——全部 4,440,000 份额均已铸造完毕。",
+          errZero: "请输入至少 1 份额。",
+          errAllowance: "USDT 授权额度不足。请先授权 USDT，然后再铸造。",
+          errBalance: "USDT 余额不足，无法完成此次购买。",
+          errPayFail: "USDT 付款失败。请检查余额和授权额度后重试。",
+          errInvalidId: "请输入有效的 Agent Token ID（仅数字）。",
+          errGeneric: "交易失败",
+          okApprove: "USDT 已授权。现在可以铸造。",
+          okMint: "铸造成功——{n} AICENT 已发送到您的钱包。",
+          viewTx: "在 BscScan 上查看交易",
+          waiting: "等待确认…",
+          agentPlaceholder: "例如 12345678901234567890…"
+        }
+      };
+      var lang = "en";
+      function t(key) { return STR[lang][key] || STR.en[key] || key; }
+
+      /* ---------- price curve (mirrors AicentMint.priceFor) ---------- */
+      function priceFor(sold) {
+        sold = BigInt(sold);
+        if (sold < 10000n) return 500000n;
+        if (sold < 21000n) return 600000n + 100000n * ((sold - 10000n) / 1000n);
+        if (sold < 100000n) return 1620000n + 20000n * ((sold - 21000n) / 1000n);
+        if (sold < 1000000n) return 3200000n + 20000n * ((sold - 100000n) / 10000n);
+        var k = (sold - 1000000n) / 20000n;
+        return 5000000n + (k / 2n) * 30000n + (k % 2n) * 20000n;
+      }
+      var TIERS = [
+        { from: 0n, to: 9999n, desc: "0.50" },
+        { from: 10000n, to: 20999n, desc: "0.60 → 1.60" },
+        { from: 21000n, to: 99999n, desc: "1.62 → 3.18" },
+        { from: 100000n, to: 999999n, desc: "3.20 → 4.98" },
+        { from: 1000000n, to: 4439999n, desc: "5.00 → 7.57" }
+      ];
+
+      /* ---------- formatting ---------- */
+      function fmtUsdt(raw, minDec) {
+        var v = Number(ethers.formatUnits(raw, 6));
+        var s = v.toLocaleString("en-US", { minimumFractionDigits: minDec == null ? 2 : minDec, maximumFractionDigits: 6 });
+        return s;
+      }
+      function fmtInt(n) { return Number(n).toLocaleString("en-US"); }
+      function fmtAicent(raw) {
+        var v = Number(ethers.formatUnits(raw, 18));
+        return v.toLocaleString("en-US", { maximumFractionDigits: 4 });
+      }
+      function shortAddr(a) { return a.slice(0, 6) + "…" + a.slice(-4); }
+      function scanTx(hash) { return "https://bscscan.com/tx/" + hash; }
+      function scanAddr(a) { return "https://bscscan.com/address/" + a; }
+
+      /* ---------- state ---------- */
+      var readProvider = null;
+      var mintRead = null;
+      var account = null;
+      var signer = null;
+      var browserProvider = null;
+      var totalSoldCache = null;
+      var currentQuote = null; // BigInt raw USDT
+      var allowanceCache = 0n;
+      var ownedCache = null;
+      var busy = false;
+
+      var $ = function (id) { return document.getElementById(id); };
+
+      function getReadProvider() {
+        if (!readProvider) readProvider = new ethers.JsonRpcProvider(RPCS[0]);
+        return readProvider;
+      }
+      async function readCall(fn) {
+        var lastErr;
+        for (var i = 0; i < RPCS.length; i++) {
+          try {
+            var p = new ethers.JsonRpcProvider(RPCS[i]);
+            var c = new ethers.Contract(ADDR.mint, MINT_ABI, p);
+            return await fn(c, p);
+          } catch (e) { lastErr = e; }
+        }
+        throw lastErr;
+      }
+
+      /* ---------- messages ---------- */
+      function showMsg(kind, html) {
+        var m = $("msg");
+        m.className = "msg show " + kind;
+        m.innerHTML = html;
+      }
+      function hideMsg() { $("msg").className = "msg"; $("msg").innerHTML = ""; }
+
+      function friendlyError(e) {
+        var raw = "";
+        try {
+          raw = [e && e.reason, e && e.shortMessage, e && e.message,
+                 e && e.info && e.info.error && e.info.error.message,
+                 e && e.error && e.error.message].filter(Boolean).join(" | ");
+        } catch (_) {}
+        var low = raw.toLowerCase();
+        if (e && (e.code === 4001 || low.indexOf("user rejected") >= 0 || low.indexOf("user denied") >= 0)) return t("errRejected");
+        if (low.indexOf("not agent owner") >= 0) return t("errNotOwner");
+        if (low.indexOf("agent cap") >= 0) return t("errCap");
+        if (low.indexOf("sold out") >= 0) return t("errSoldOut");
+        if (low.indexOf("zero shares") >= 0) return t("errZero");
+        if (low.indexOf("insufficient allowance") >= 0 || low.indexOf("erc20insufficientallowance") >= 0) return t("errAllowance");
+        if (low.indexOf("insufficient balance") >= 0 || low.indexOf("erc20insufficientbalance") >= 0 || low.indexOf("transfer amount exceeds balance") >= 0) return t("errBalance");
+        if (low.indexOf("payment failed") >= 0 || low.indexOf("treasury failed") >= 0) return t("errPayFail");
+        if (low.indexOf("does not exist") >= 0 || low.indexOf("invalid token") >= 0 || low.indexOf("erc721") >= 0) return t("errNotOwner");
+        return t("errGeneric") + (raw ? ": " + raw.slice(0, 220) : "");
+      }
+
+      /* ---------- live stats ---------- */
+      async function refreshStats() {
+        try {
+          var res = await readCall(async function (c) {
+            var sold = await c.totalSold();
+            var price = await c.priceFor(sold);
+            var reserve = await c.poolReserve();
+            return { sold: sold, price: price, reserve: reserve };
+          });
+          totalSoldCache = res.sold;
+          $("stat-price").textContent = fmtUsdt(res.price);
+          $("stat-sold").textContent = fmtInt(res.sold);
+          $("stat-reserve").textContent = fmtUsdt(res.reserve);
+          var pct = Number((res.sold * 10000n) / MAX_SHARES) / 100;
+          $("stat-pct").textContent = pct.toFixed(2) + "%";
+          $("progress-fill").style.width = Math.max(pct, 0.05) + "%";
+          markCurrentTier(res.sold);
+          updateQuote();
+        } catch (e) { /* keep last good values */ }
+      }
+
+      function markCurrentTier(sold) {
+        var rows = $("curve-body").children;
+        for (var i = 0; i < TIERS.length; i++) {
+          if (rows[i]) rows[i].className = (sold >= TIERS[i].from && sold <= TIERS[i].to) ? "current" : "";
+        }
+      }
+
+      function renderCurve() {
+        var body = $("curve-body");
+        body.innerHTML = "";
+        TIERS.forEach(function (tier) {
+          var tr = document.createElement("tr");
+          var td1 = document.createElement("td");
+          td1.textContent = fmtInt(tier.from) + " – " + fmtInt(tier.to);
+          var td2 = document.createElement("td");
+          td2.className = "num mono";
+          td2.textContent = tier.desc;
+          tr.appendChild(td1); tr.appendChild(td2);
+          body.appendChild(tr);
+        });
+      }
+
+      function renderContracts() {
+        var rows = [
+          ["cToken", ADDR.token],
+          ["cMint", ADDR.mint],
+          ["cUsdt", ADDR.usdt],
+          ["cRegistry", ADDR.registry],
+          ["cTreasury", ADDR.treasury]
+        ];
+        var box = $("contracts");
+        box.innerHTML = "";
+        rows.forEach(function (r) {
+          var div = document.createElement("div");
+          div.className = "contract-row";
+          var name = document.createElement("span");
+          name.className = "name"; name.setAttribute("data-i18n", r[0]); name.textContent = t(r[0]);
+          var addr = document.createElement("span");
+          addr.className = "addr"; addr.textContent = r[1];
+          var copy = document.createElement("button");
+          copy.type = "button"; copy.className = "icon-btn"; copy.textContent = t("copy");
+          copy.addEventListener("click", function () {
+            var done = function () { copy.textContent = t("copied"); setTimeout(function () { copy.textContent = t("copy"); }, 1400); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(r[1]).then(done, done);
+            else done();
+          });
+          var link = document.createElement("a");
+          link.className = "icon-btn"; link.href = scanAddr(r[1]); link.target = "_blank"; link.rel = "noopener"; link.textContent = t("view");
+          div.appendChild(name); div.appendChild(addr); div.appendChild(copy); div.appendChild(link);
+          box.appendChild(div);
+        });
+      }
+
+      /* ---------- quote & form ---------- */
+      function getShares() {
+        var v = parseInt($("shares").value, 10);
+        if (isNaN(v)) return 0;
+        return Math.max(0, Math.min(10, v));
+      }
+      function getAgentId() {
+        var s = $("agent-id").value.trim();
+        if (!/^\d+$/.test(s)) return null;
+        try { return BigInt(s); } catch (e) { return null; }
+      }
+
+      async function updateQuote() {
+        var shares = getShares();
+        if (!shares || totalSoldCache === null) {
+          currentQuote = null;
+          $("q-total").textContent = "—"; $("q-avg").textContent = "—";
+          $("q-pool").textContent = "—"; $("q-treasury").textContent = "—";
+          updateButtons();
+          return;
+        }
+        var cost = 0n;
+        for (var i = 0; i < shares; i++) cost += priceFor(totalSoldCache + BigInt(i));
+        currentQuote = cost;
+        var treasuryPart = (cost * 2000n) / 10000n;
+        var poolPart = cost - treasuryPart;
+        $("q-total").textContent = fmtUsdt(cost) + " USDT";
+        $("q-avg").textContent = fmtUsdt(cost / BigInt(shares)) + " USDT";
+        $("q-pool").textContent = fmtUsdt(poolPart) + " USDT";
+        $("q-treasury").textContent = fmtUsdt(treasuryPart) + " USDT";
+        // cross-check against the contract's own quote() in the background
+        readCall(function (c) { return c.quote(BigInt(shares)); }).then(function (onchain) {
+          if (onchain !== currentQuote && getShares() === shares) {
+            currentQuote = onchain;
+            var tp = (onchain * 2000n) / 10000n;
+            $("q-total").textContent = fmtUsdt(onchain) + " USDT";
+            $("q-avg").textContent = fmtUsdt(onchain / BigInt(shares)) + " USDT";
+            $("q-pool").textContent = fmtUsdt(onchain - tp) + " USDT";
+            $("q-treasury").textContent = fmtUsdt(tp) + " USDT";
+            updateButtons();
+          }
+        }).catch(function () {});
+        updateButtons();
+      }
+
+      async function refreshOwned() {
+        var id = getAgentId();
+        if (id === null) { ownedCache = null; $("owned-line").hidden = true; updateButtons(); return; }
+        try {
+          var n = await readCall(function (c) { return c.sharesByAgentId(id); });
+          ownedCache = n;
+          $("owned-count").textContent = n.toString();
+          $("owned-remain").textContent = (10n - n > 0n ? 10n - n : 0n).toString();
+          $("owned-line").hidden = false;
+        } catch (e) { $("owned-line").hidden = true; }
+        updateButtons();
+      }
+
+      async function refreshWalletData() {
+        if (!account) return;
+        try {
+          var p = getReadProvider();
+          var usdt = new ethers.Contract(ADDR.usdt, ERC20_ABI, p);
+          var tok = new ethers.Contract(ADDR.token, ERC20_ABI, p);
+          var results = await Promise.all([
+            tok.balanceOf(account),
+            usdt.balanceOf(account),
+            usdt.allowance(account, ADDR.mint)
+          ]);
+          $("bal-aicent").textContent = fmtAicent(results[0]) + " AICENT";
+          $("bal-usdt").textContent = fmtUsdt(results[1]) + " USDT";
+          allowanceCache = results[2];
+        } catch (e) {}
+        refreshOwned();
+        updateButtons();
+      }
+
+      function updateButtons() {
+        var approveBtn = $("btn-approve");
+        var mintBtn = $("btn-mint");
+        if (!account || busy) { approveBtn.disabled = true; mintBtn.disabled = true; return; }
+        var idOk = getAgentId() !== null;
+        var shares = getShares();
+        var hasQuote = currentQuote !== null && currentQuote > 0n;
+        var needApprove = hasQuote && allowanceCache < currentQuote;
+        approveBtn.disabled = !(idOk && shares > 0 && needApprove);
+        var capOk = ownedCache === null || BigInt(shares) <= (10n - ownedCache > 0n ? 10n - ownedCache : 0n);
+        mintBtn.disabled = !(idOk && shares > 0 && hasQuote && !needApprove && capOk);
+      }
+
+      /* ---------- wallet ---------- */
+      async function ensureChain() {
+        var eth = window.ethereum;
+        var current = await eth.request({ method: "eth_chainId" });
+        if (current === CHAIN_HEX) return;
+        try {
+          await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] });
+        } catch (e) {
+          if (e && e.code === 4902) {
+            await eth.request({
+              method: "wallet_addEthereumChain",
+              params: [{
+                chainId: CHAIN_HEX,
+                chainName: "BNB Smart Chain",
+                nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+                rpcUrls: ["https://bsc-dataseed.binance.org"],
+                blockExplorerUrls: ["https://bscscan.com"]
+              }]
+            });
+          } else { throw e; }
+        }
+      }
+
+      async function connect() {
+        hideMsg();
+        if (!window.ethereum) { showMsg("err", t("errNoWallet")); return; }
+        var btn = $("btn-connect");
+        btn.classList.add("busy"); btn.disabled = true;
+        try {
+          await ensureChain();
+          browserProvider = new ethers.BrowserProvider(window.ethereum);
+          var accounts = await browserProvider.send("eth_requestAccounts", []);
+          if (!accounts || !accounts.length) throw new Error("no accounts");
+          var net = await browserProvider.getNetwork();
+          if (Number(net.chainId) !== CHAIN_ID) { showMsg("err", t("errWrongNet")); return; }
+          signer = await browserProvider.getSigner();
+          account = await signer.getAddress();
+          onConnected();
+        } catch (e) {
+          showMsg("err", friendlyError(e));
+        } finally {
+          btn.classList.remove("busy"); btn.disabled = false;
+        }
+      }
+
+      function onConnected() {
+        $("connect-block").hidden = true;
+        $("wallet-block").hidden = false;
+        $("wallet-addr").textContent = shortAddr(account);
+        $("wallet-addr").title = account;
+        refreshStats();
+        refreshWalletData();
+      }
+
+      function disconnect() {
+        account = null; signer = null; browserProvider = null;
+        allowanceCache = 0n; ownedCache = null;
+        $("wallet-block").hidden = true;
+        $("connect-block").hidden = false;
+        hideMsg();
+      }
+
+      /* ---------- transactions ---------- */
+      async function doApprove() {
+        if (!signer || currentQuote === null) return;
+        hideMsg();
+        busy = true; updateButtons();
+        var btn = $("btn-approve");
+        btn.classList.add("busy");
+        btn.querySelector("span:last-child").textContent = t("approving");
+        try {
+          var usdt = new ethers.Contract(ADDR.usdt, ERC20_ABI, signer);
+          var tx = await usdt.approve(ADDR.mint, currentQuote);
+          showMsg("warn", t("waiting") + ' <a href="' + scanTx(tx.hash) + '" target="_blank" rel="noopener">' + t("viewTx") + "</a>");
+          await tx.wait();
+          showMsg("ok", t("okApprove") + ' <a href="' + scanTx(tx.hash) + '" target="_blank" rel="noopener">' + t("viewTx") + "</a>");
+          await refreshWalletData();
+        } catch (e) {
+          showMsg("err", friendlyError(e));
+        } finally {
+          busy = false;
+          btn.classList.remove("busy");
+          btn.querySelector("span:last-child").textContent = t("approve");
+          updateButtons();
+        }
+      }
+
+      async function doMint() {
+        var id = getAgentId();
+        var shares = getShares();
+        if (!signer || id === null || !shares) { if (id === null) showMsg("err", t("errInvalidId")); return; }
+        hideMsg();
+        busy = true; updateButtons();
+        var btn = $("btn-mint");
+        btn.classList.add("busy");
+        btn.querySelector("span:last-child").textContent = t("minting");
+        try {
+          var mint = new ethers.Contract(ADDR.mint, MINT_ABI, signer);
+          var tx = await mint.mint(id, BigInt(shares));
+          showMsg("warn", t("waiting") + ' <a href="' + scanTx(tx.hash) + '" target="_blank" rel="noopener">' + t("viewTx") + "</a>");
+          await tx.wait();
+          showMsg("ok", t("okMint").replace("{n}", String(shares)) + ' <a href="' + scanTx(tx.hash) + '" target="_blank" rel="noopener">' + t("viewTx") + "</a>");
+          await refreshStats();
+          await refreshWalletData();
+        } catch (e) {
+          showMsg("err", friendlyError(e));
+        } finally {
+          busy = false;
+          btn.classList.remove("busy");
+          btn.querySelector("span:last-child").textContent = t("mintBtn");
+          updateButtons();
+        }
+      }
+
+      /* ---------- language ---------- */
+      function applyLang() {
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        var nodes = document.querySelectorAll("[data-i18n]");
+        for (var i = 0; i < nodes.length; i++) {
+          var key = nodes[i].getAttribute("data-i18n");
+          if (STR[lang][key] != null) nodes[i].innerHTML = STR[lang][key];
+        }
+        $("agent-id").placeholder = t("agentPlaceholder");
+        $("lang-en").setAttribute("aria-pressed", lang === "en" ? "true" : "false");
+        $("lang-zh").setAttribute("aria-pressed", lang === "zh" ? "true" : "false");
+        renderContracts();
+      }
+      function setLang(l) { lang = l; applyLang(); }
+
+      /* ---------- wiring ---------- */
+      document.addEventListener("DOMContentLoaded", function () {
+        renderCurve();
+        applyLang();
+        refreshStats();
+        setInterval(refreshStats, 30000);
+
+        $("lang-en").addEventListener("click", function () { setLang("en"); });
+        $("lang-zh").addEventListener("click", function () { setLang("zh"); });
+        $("btn-connect").addEventListener("click", connect);
+        $("btn-disconnect").addEventListener("click", disconnect);
+        $("btn-approve").addEventListener("click", doApprove);
+        $("btn-mint").addEventListener("click", doMint);
+
+        var debounce;
+        $("agent-id").addEventListener("input", function () {
+          clearTimeout(debounce);
+          debounce = setTimeout(refreshOwned, 450);
+          updateButtons();
+        });
+        $("shares").addEventListener("input", function () {
+          var v = getShares();
+          if (v > 10) { $("shares").value = 10; }
+          updateQuote();
+        });
+        $("step-down").addEventListener("click", function () {
+          var v = Math.max(1, getShares() - 1); $("shares").value = v; updateQuote();
+        });
+        $("step-up").addEventListener("click", function () {
+          var v = Math.min(10, getShares() + 1); $("shares").value = v; updateQuote();
+        });
+        var quicks = document.querySelectorAll(".quick button");
+        for (var i = 0; i < quicks.length; i++) {
+          quicks[i].addEventListener("click", function () {
+            $("shares").value = this.getAttribute("data-set");
+            updateQuote();
+          });
+        }
+
+        if (window.ethereum && window.ethereum.on) {
+          window.ethereum.on("accountsChanged", function (accs) {
+            if (!accs || !accs.length) { disconnect(); return; }
+            if (account) {
+              browserProvider = new ethers.BrowserProvider(window.ethereum);
+              browserProvider.getSigner().then(function (s) {
+                signer = s;
+                return s.getAddress();
+              }).then(function (a) { account = a; onConnected(); }).catch(function () {});
+            }
+          });
+          window.ethereum.on("chainChanged", function () { window.location.reload(); });
+        }
+      });
+    </script>
+  </body>
+</html>
